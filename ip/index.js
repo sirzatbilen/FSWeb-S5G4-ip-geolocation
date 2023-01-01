@@ -1,4 +1,5 @@
 //axios import buraya gelecek
+import axios from 'axios';
 
 var benimIP;
 
@@ -25,11 +26,11 @@ async function ipAdresimiAl(){
 /*
 	ADIM 1: axios kullanarak, aşağıdaki URL'ye GET sorgusu atacağız
     (tag içindeki yere kendi ipnizi yazarak URL'yi oluşturun):
-    https://apis.ergineer.com/ipgeoapi/<ipniz>
+    https://apis.ergineer.com/ipgeoapi/88.248.48.167 
 	
-	NOT: Bilgisayarın IP adresini öğrenmek için: https://apis.ergineer.com/ipadresim 
+	NOT: Bilgisayarın IP adresini öğrenmek için: https://apis.ergineer.com/88.248.48.167 
 	ADIM 5'e gelene kadar fonksiyonunuzu test etmek için ip nizi URL'ye manuel olarak ekleyebilirsiniz.
-*/
+*/																					
 
 /*
 	ADIM 2: Geri döndürülen verileri inceleyin, bu sizin ip bilgileriniz! Bileşen fonksiyonunuzu geliştirmek içindeki bu veri yapısını
@@ -70,3 +71,58 @@ async function ipAdresimiAl(){
 
 
 //kodlar buraya gelecek
+
+function adresKartiOustur(obje){
+	const cardDiv = document.createElement("div");
+	const ulkeBayrak = document.createElement("img");
+	const cardInfoDiv = document.createElement("div");
+	const ipAdres = document.createElement("h3");
+	const ulke = document.createElement("p");
+	const enlemBoylam = document.createElement("p")
+	const sehir = document.createElement("p")
+	const saatDilimi = document.createElement("p")
+	const paraBirimi = document.createElement("p")
+	const isp = document.createElement("p")
+
+	cardDiv.classList.add("card");
+	cardInfoDiv.classList.add("card-info");
+	ipAdres.classList.add("ip");
+	ulke.classList.add("ulke");
+
+	cardInfoDiv.appendChild(ipAdres);
+	cardInfoDiv.appendChild(ulke);
+	cardInfoDiv.appendChild(enlemBoylam);
+	cardInfoDiv.appendChild(sehir);
+	cardInfoDiv.appendChild(saatDilimi);
+	cardInfoDiv.appendChild(paraBirimi);
+	cardInfoDiv.appendChild(isp);
+
+	cardDiv.appendChild(ulkeBayrak);
+	cardDiv.appendChild(cardInfoDiv);
+
+	ulkeBayrak.src = obje.ülkebayrağı;
+	ipAdres.textContent = obje.sorgu;
+	ulke.textContent = `${obje.ülke} (${obje.ülkeKodu})`;
+	enlemBoylam.textContent = `Enlem: ${obje.enlem} Boylam: ${obje.boylam}`;
+	sehir.textContent = obje.şehir;
+	saatDilimi.textContent = obje.saatdilimi;
+	paraBirimi.textContent = obje.parabirimi;
+	isp.textContent = obje.isp;
+
+	return cardDiv;
+}
+
+const cardsDiv = document.querySelector(".cards");
+
+const connection = async function() {
+	await ipAdresimiAl();
+	axios
+		.get("https://apis.ergineer.com/ipgeoapi/" + benimIP)
+		.then((response) => {
+			cardsDiv.appendChild(adresKartiOustur(response.data));
+		})
+		.catch((error) => {
+			console.log("Error: " + error);
+		});
+};
+connection();
